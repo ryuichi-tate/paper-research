@@ -40,7 +40,7 @@ headとはRPNのこと。H0は画像をConvしたものからパッチごとに�
 
 <!-- <img src='https://drive.google.com/file/d/1qFq6cmhp6Z-7KnRIOAszLl1IMJxS7dnA/view?usp=sharing'> -->
 
-https://drive.google.com/drive/u/0/folders/1txvUgZn18nAwmoEAmVfiMyfdvSLDqqzP
+https://drive.google.com/file/d/1qFq6cmhp6Z-7KnRIOAszLl1IMJxS7dnA/view?usp=sharing
 
 そうして各パッチに対して推定されたBBと正解のBBとのIoUを見て、採用するBBを決める。(そしてこのペアが次のH1における教師データになる？)
 
