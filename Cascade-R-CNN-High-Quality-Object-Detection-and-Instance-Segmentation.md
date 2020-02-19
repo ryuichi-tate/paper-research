@@ -40,6 +40,8 @@ headとはRPNのこと。H0は画像をConvしたものからパッチごとに�
 
 <!-- <img src='https://drive.google.com/file/d/1qFq6cmhp6Z-7KnRIOAszLl1IMJxS7dnA/view?usp=sharing'> -->
 
+https://drive.google.com/drive/u/0/folders/1txvUgZn18nAwmoEAmVfiMyfdvSLDqqzP
+
 そうして各パッチに対して推定されたBBと正解のBBとのIoUを見て、採用するBBを決める。(そしてこのペアが次のH1における教師データになる？)
 
 H1はBBの提案と画像をConvしたものを受け取る。そんでパッチごとに正解のBBであるgに近づけるようなLossとニューラルネット($f$のこと)を作る。
