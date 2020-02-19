@@ -36,9 +36,9 @@ Cascade RCNNの解説
 
 headとはRPNのこと。H0は画像をConvしたものからパッチごとに、そのパッチの中に物体の中心が含まれる信頼度、含まれるとしたらその物体のBB(大きさと位置)を出力するRPN。下図参照。(パッチをスライディングウィンドウと読み替えて)
 
-<!-- <img src="https://drive.google.com/uc?export=view&id=1qFq6cmhp6Z-7KnRIOAszLl1IMJxS7dnA"> -->
+<img src="https://drive.google.com/uc?export=view&id=1qFq6cmhp6Z-7KnRIOAszLl1IMJxS7dnA">
 
-<img src='https://drive.google.com/file/d/1qFq6cmhp6Z-7KnRIOAszLl1IMJxS7dnA/view?usp=sharing'>
+<!-- <img src='https://drive.google.com/file/d/1qFq6cmhp6Z-7KnRIOAszLl1IMJxS7dnA/view?usp=sharing'> -->
 
 そうして各パッチに対して推定されたBBと正解のBBとのIoUを見て、採用するBBを決める。(そしてこのペアが次のH1における教師データになる？)
 
