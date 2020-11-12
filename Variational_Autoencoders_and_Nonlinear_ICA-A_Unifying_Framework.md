@@ -3,7 +3,7 @@
 ## 概要
 VAEとは：「深層 隠れ変数モデル」 の学習を深層学習で効果的に行うフレームワーク<br>　→　結果としてモデル内の観測変数の分布$p(\bf x)$はよく真のデータ分布とfitする。
 
-でも本当は観測変数$\bf x$と隠れ変数$\bf z$の同時分布$p(\bf x, \bf z)$を推定したい。（できれば隠れ変数の事前分布と事後分布も。）<br>→　これは不可能と言われている。なぜならモデルが一意でない（unidentifiable）から。
+でも本当は観測変数$\bf x$と隠れ変数$\bf z$の同時分布$p(\bf x, \bf z)$を推定したい。（できれば隠れ変数の事前分布と事後分布も。）<br>→　これは不可能と言われている。なぜならモデルが識別可能ではない（＝ 一意でない ＝ unidentifiable）から。
 
 しかし我々はあるシンプルな変換を用いることで、<strong>隠れ変数と観測変数の同時分布の特定が可能であることを示した。</strong>これはdisentanglementにも繋がる。
 
@@ -20,7 +20,7 @@ VAEは隠れ変数（＝未観測変数or潜在変数）のある確率モデル
 仮になんとかして同時分布が学習できれば、隠れ変数の事前分布と事後分布も近似することもできる。<br>
 応用先：データの背後にある隠れ変数の構造を捉えたり、ある観測データの元となる隠れ変数を推定することもできる。
 
-<strong>モデルが<font color="Red">識別可能</font>（後述）でなければ同時分布の学習はできない。</strong>VAEの元論文では、隠れ変数を周辺化した分布（＝データ分布を近似する分布）を推定するようなパラメタの学習方法に<strong>のみ</strong>言及している。
+<strong>モデルが<font color="Red">識別可能（= 一意 = indentifiable）</font>（後述）でなければ同時分布の学習はできない。</strong>VAEの元論文では、隠れ変数を周辺化した分布（＝データ分布を近似する分布）を推定するようなパラメタの学習方法に<strong>のみ</strong>言及している。
 
 VAE論文の参考文献をみると、方向性としてはdisentanglementがやりたいみたい。特にβ-VAEなどはこの典型例だ。でもモデルの識別可能性やモデルの隠れ変数についての理論的な証明には言及していない。<br>
 GANを用いて最も独立となるような成分を抜き出す研究もある（Brakel and Bengio）。<br>
@@ -40,3 +40,6 @@ GANを用いて最も独立となるような成分を抜き出す研究もあ�
 
 ## 深層隠れ変数モデルって？
 観測変数$\bf x\in\mathcal{R}^d$と隠れ変数$\bf z\in\mathbb{R}^n$がある。確率モデルは
+<img src=
+"https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%3Dp_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%7C%5Cbf+z%29p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+z%29%0A%5Cend%7Balign%2A%7D%0A">
+
