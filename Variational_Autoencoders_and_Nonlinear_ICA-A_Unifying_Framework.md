@@ -38,11 +38,51 @@ GANを用いて最も独立となるような成分を抜き出す研究もあ�
 
 ## 深層隠れ変数モデルの識別不可能性
 
-## 深層隠れ変数モデルって？
+### 深層隠れ変数モデルって？
 観測変数$\bf x\in\mathcal{R}^d$と隠れ変数$\bf z\in\mathbb{R}^n$がある。確率モデルは<bf>
 
 <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%3Dp_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%7C%5Cbf+z%29p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+z%29%5Ctag%7B1%7D%0A%5Cend%7Balign%7D%0A" alt="\begin{align}p_{\boldsymbol\theta}(\bf x,\bf z)=p_{\boldsymbol\theta}(\bf x|\bf z)p_{\boldsymbol\theta}(\bf z)\tag{1}\end{align}">
 
 という構造。$\boldsymbol\theta\in\Theta$はモデルのパラメタで、$p_{\boldsymbol\theta}(\bf z)$は隠れ変数の事前分布。隠れ変数$\bf z$の値によって決まる観測変数$\bf x$の確率分布$p_{\boldsymbol\theta}(\bf x|\bf z)$は、decoderというニューラルネットでparametarizeされる。<bf>
 データの経験分布$p_{\boldsymbol\theta}(\bf x)$はこうなる。<br>
-<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%29%3D%5Cint+p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%5Ctag%7B2%7D%0A%5Cend%7Balign%7D" alt="\begin{align}p_{\boldsymbol\theta}(\bf x)=\int p_{\boldsymbol\theta}(\bf x,\bf z)\tag{2}\end{align}">
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%29%3D%5Cint+p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%0A%5Cend%7Balign%2A%7D+" alt="\begin{align*}p_{\boldsymbol\theta}(\bf x)=\int p_{\boldsymbol\theta}(\bf x,\bf z)\end{align*} ">
+
+$p_{\boldsymbol\theta}(\bf x|\bf z)$はニューラルネットでモデリングされるので、リッチなデータ分布$p_{\boldsymbol\theta}(\bf x)$でもモデリングできる。
+
+観測データはある真の同時分布$p_{\boldsymbol\theta^{\ast}}(\bf x,\bf z)=p_{\boldsymbol\theta^{\ast}}(\bf x|\bf z)p_{\boldsymbol\theta^{\ast}}(\bf z)$から生成されているとする（$\boldsymbol{\theta}^{\ast}$は真のパラメタ）。データセット$\mathcal{D}$は<br>
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%26%5Cmathcal%7BD%7D%3D%5C%7B%5Cbf+x%5E%7B%281%29%7D%2C+%5Cbf+x%5E%7B%282%29%7D%2C%5Ccdots%2C%5Cbf+x%5E%7B%28N%29%7D%5C%7D%5C%5C%0A%26%5Cbf+x%5E%7B%28i%29%7D%5Csim+p_%7B%5Cboldsymbol%5Ctheta%5E%7B%5Cast%7D%7D%28%5Cbf+x%7C%5Cbf+z%5E%7B%5Cast%28i%29%7D%29%5C%5C%0A%26%5Cbf+z%5E%7B%5Cast%28i%29%7D%5Csim+p_%7B%5Cboldsymbol%5Ctheta%5E%7B%5Cast%7D%7D%28%5Cbf+z%29%0A%5Cend%7Balign%2A%7D" alt="\begin{align*}&\mathcal{D}=\{\bf x^{(1)}, \bf x^{(2)},\cdots,\bf x^{(N)}\}\\&\bf x^{(i)}\sim p_{\boldsymbol\theta^{\ast}}(\bf x|\bf z^{\ast(i)})\\&\bf z^{\ast(i)}\sim p_{\boldsymbol\theta^{\ast}}(\bf z)end{align*}">
+
+で構成。<br>
+ICAの文脈では$\bf z$をsourceという言葉で表現している。<br>
+あと$\bf x^{(i)}\sim p_{\boldsymbol\theta^{\ast}}(\bf x)$も忘れずに。
+
+VAEのフレームワークを用いると、周辺尤度（$p_{\boldsymbol{\theta}}(\bf x)$のこと?）を最大化するようにパラメタ$\boldsymbol{\theta}$は学習される。
+
+### パラメタ空間 VS 関数空間(Function Space)
+この論文では少々特殊なnotationをする。<br>
+- $\boldsymbol{\theta}\in\Theta$は関数空間におけるモデルパラメタ
+- $\bf w\in W$はニューラルネットのパラメタ
+
+### 識別可能性とは
+VAEモデルは
+- 完全な生成モデル$p_{\boldsymbol{\theta}}(\bf x,\bf z)=p_{\boldsymbol{\theta}}(\bf x|\bf z)p_{\boldsymbol{\theta}}(\bf z)$
+- 推定モデル$q_{\boldsymbol{\phi}}(\bf z|\bf x)$（$\bf z$の事後分布$p_{\boldsymbol\theta}(\bf z|\bf x)$を近似するもの）
+
+を学習する。問題点は学習で得られたこの二つが実際はなんなのかは分からないことだ。分かるのは$\bf x$の周辺分布$p_{\boldsymbol\theta}(\bf x)$に意味はあるが、他の分布はあんまり意味がないということだ。
+
+<strong>モデルの識別可能性とはこれ↓。</strong>
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cforall+%28%5Cboldsymbol%5Ctheta%2C+%5Cboldsymbol%5Ctheta%27%29%5C+%3A%5C+p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%29%3Dp_%7B%5Cboldsymbol%5Ctheta%27%7D%28%5Cbf+x%29%5C++%5CRightarrow%5C+%5Cboldsymbol%5Ctheta%3D%5Cboldsymbol%5Ctheta%27%0A" alt="\forall (\boldsymbol\theta, \boldsymbol\theta')\ :\ p_{\boldsymbol\theta}(\bf x)=p_{\boldsymbol\theta'}(\bf x)\  \Rightarrow\ \boldsymbol\theta=\boldsymbol\theta'">
+
+こいつが全ての$(\bf x,\bf z)$で成り立つようなモデルが欲しい。これは、学習によってデータに適合した$\boldsymbol{\theta}$を獲得した時、
+- 周辺分布$p_{\boldsymbol{\theta}}(\bf x)$
+- 同時分布$p_{\boldsymbol{\theta}}(\bf x,\bf z)$
+- 事前分布$p_{\boldsymbol{\theta}}(\bf z)$
+- 事後分布$p_{\boldsymbol{\theta}}(\bf z|\bf x)$
+
+が全てそれぞれの真の確率分布（つまり$\boldsymbol{\theta}'$の時の場合）と一致することを表す。<br>
+VAEの場合は得られた推論モデル$q_{\boldsymbol{\phi}}(\bf z|\bf x)$を用いてあるデータを生成した元のsource$\bf z^{\ast}$の推論もできる。
+
+深層隠れ変数モデルは識別可能な保証はない。なぜなら条件付けのない隠れ変数の分布$p_{\boldsymbol{\theta}}(\bf z)$は識別不可能であるからだ。
+
+    例えば$p_{\boldsymbol{\theta}}(\bf z)$を二次元の標準正規分布とする。回転行列$M$で$\bf z'=M\bf z$と変換した$\bf z'$を考えると、$\bf z'$は$\bf z$とは違う値になるが、$\bf z'$が従う確率分布も二次元の標準正規分布になる。
