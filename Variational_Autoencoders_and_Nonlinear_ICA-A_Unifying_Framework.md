@@ -1,4 +1,5 @@
 # Variational Autoencoders and Nonlinear ICA: A Unifying Framework
+Ilyes Khemakhem,  Diederik P. Kingma,  Ricardo Pio Monti,  Aapo Hyvärinen
 
 ## 概要
 VAEとは：「深層 隠れ変数モデル」 の学習を深層学習で効果的に行うフレームワーク<br>　→　結果としてモデル内の観測変数の分布$p(\bf x)$はよく真のデータ分布とfitする。
@@ -81,8 +82,44 @@ VAEモデルは
 - 事後分布$p_{\boldsymbol{\theta}}(\bf z|\bf x)$
 
 が全てそれぞれの真の確率分布（つまり$\boldsymbol{\theta}'$の時の場合）と一致することを表す。<br>
-VAEの場合は得られた推論モデル$q_{\boldsymbol{\phi}}(\bf z|\bf x)$を用いてあるデータを生成した元のsource$\bf z^{\ast}$の推論もできる。
+VAEの場合は得られた推論モデル$q_{\boldsymbol{\phi}}(\bf z|\bf x)$を用いてあるデータを生成した元のsource：$\bf z^{\ast}$の推論もできる。
 
 深層隠れ変数モデルは識別可能な保証はない。なぜなら条件付けのない隠れ変数の分布$p_{\boldsymbol{\theta}}(\bf z)$は識別不可能であるからだ。
 
-    例えば$p_{\boldsymbol{\theta}}(\bf z)$を二次元の標準正規分布とする。回転行列$M$で$\bf z'=M\bf z$と変換した$\bf z'$を考えると、$\bf z'$は$\bf z$とは違う値になるが、$\bf z'$が従う確率分布も二次元の標準正規分布になる。
+- 例えば$p_{\boldsymbol{\theta}}(\bf z)$を二次元の標準正規分布とする。回転行列$M$で$\bf z'=M\bf z$と変換した$\bf z'$を考えると、$\bf z'$は$\bf z$とは違う値になるが、$\bf z'$が従う確率分布も二次元の標準正規分布になる。これが識別不可能ということだ。<br>
+今回の例なら、$p_{\boldsymbol{\theta}}(\bf x|\bf z)$の演算の前にこの変換を用いるとする。分布$p_{\boldsymbol{\theta}}(\bf x)$は変わらないが$p_{\boldsymbol{\theta}}(\bf z|\bf x)$は変わるだろう。なぜなら$\bf x$の実現値は別の$\bf z$の実現値から生成されるからだ。
+
+これが広く一般に使われるモデルが識別不可能であることの説明になる。詳しくは補題Dへ。
+
+<strong>隠れ変数$\bf z$の事前分布$p_{\boldsymbol{\theta}}(\bf z)$を想定するあらゆる確率モデルは識別不可能である。</strong>
+
+## 条件付き独立事前分布（conditionally factorial priors）に基づく識別可能なモデルについて
+factorialって掛け算で分解できる→独立ってことかな？
+
+ここでは識別可能な深層隠れ変数モデルの用件とVAEを用いたその学習方法について紹介する。この識別可能なモデルとVAEフレームワークを合わせて<strong>iVAE</strong>とかく。
+
+### 提案モデルの定義
+
+モデルの識別可能性を担保する仮定は、<strong>隠れ変数$\bf z$の付加的な観測変数$\bf u$による件付き分布$p_{\boldsymbol{\theta}}(\bf z|\bf u)$が分解可能であることだ。</strong><br>
+ここでの付加的な観測変数$\bf u$とは例えば時系列の時間indexや、時系列の直前の実現値や、ある種のクラスラベルなどの、同時に観測される他の変数である。
+
+観測変数を$\bf x\in\mathbb{R}^d$と$\bf u\in\mathbb{R}^m$、隠れ変数を$\bf z\in\mathbb{R}^n$（ただし$\bf z$は$\bf x$より低次元）、$\boldsymbol{\theta}=(\boldsymbol{f},\boldsymbol{T},\boldsymbol{\lambda})$をモデルのパラメタとする。以下の条件付き生成モデルを考える。
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%7C%5Cbf+u%29%3Dp_%7B%5Cbf+f%7D%28%5Cbf+x%7C%5Cbf+z%29p_%7B%5Cbf+T%2C%5Cbf%5Clambda%7D%28%5Cbf+z%7C%5Cbf+u%29%0A" alt="p_{\boldsymbol\theta}(\bf x,\bf z|\bf u)=p_{\bf f}(\bf x|\bf z)p_{\bf T,\bf\lambda}(\bf z|\bf u)">
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+p_%7Bf%7D%28%5Cbf+x%7C%5Cbf+z%29%3Dp_%7B%5Cboldsymbol%5Cvarepsilon%7D%28%5Cbf+x-%5Cbf+f%28%5Cbf+z%29%29%0A" alt="p_{f}(\bf x|\bf z)=p_{\boldsymbol\varepsilon}(\bf x-\bf f(\bf z))
+">
+
+これは$\bf x$の実現値は$\bf x=\bf f(\bf z)+\boldsymbol{\varepsilon}$と分解可能であることを意味する。（$\boldsymbol{\varepsilon}$は確率分布$p_{\boldsymbol\varepsilon}(\boldsymbol\varepsilon)$に従う、他の変数とは独立な変数である）<br>
+$\bf f$は単写で、ある複雑な非線形関数を表す。解析では$\bf f$をモデルパラメタのように扱うが、実際はニューラルで表現する。
+
+ここでは観測変数$\bf x$は連続でノイズの乗ったものとするが、ノイズのないモデリングや離散的な観測変数を想定することも可能。詳しくは補題Cへ。<br>
+したがって$p_{\boldsymbol\theta}(\bf x|\bf z)$を離散確率分布やflow-basedモデル（$\bf z$から$\bf x$への変換が確定的なモデルの一つ？）に置き換えることもできる。
+
+仮説より<strong>隠れ変数$\bf z$の事前分布$p_{\boldsymbol{\theta}}(\bf z|\bf u)$は各次元で条件付き独立である。</strong><br>
+つまり$\bf z$の各要素$z_i\in\bf z$は変数$\bf u$で条件つけられた指数分布族に従う。$\bf u$はあるよく分からない関数$\boldsymbol{\lambda}(\bf u)$を通って指数分布族のパラメタ$\lambda_{i,j}$に変換される（$\boldsymbol{\lambda}(\cdot)$もニューラルだな）。<br>
+密度関数はこんな感じ。
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+p_%7B%5Cboldsymbol%7B%5Ctheta%7D%7D%28%5Cbf+z%7C%5Cbf+u%29%3Dp_%7B%5Cbf+T%2C%5Cbf%5Clambda%7D%28%5Cbf+z%7C%5Cbf+u%29%3D%5Cprod_i%5Cfrac%7BQ_i%28z_i%29%7D%7BZ_i%28%5Cbf+u%29%7D%5Cexp%5Cleft%5B%5Csum_%7Bj%3D1%7D%5EkT_%7Bi%2Cj%7D%28z_i%29%5Clambda_%7Bi%2Cj%7D%28%5Cbf+u%29%5Cright%5D" alt="p_{\boldsymbol{\theta}}(\bf z|\bf u)=p_{\bf T,\bf\lambda}(\bf z|\bf u)=\prod_i\frac{Q_i(z_i)}{Z_i(\bf u)}\exp\left[\sum_{j=1}^kT_{i,j}(z_i)\lambda_{i,j}(\bf u)\right]">
+
+$Q_i$や$T_{i,j}$は適当な関数（$\bf z$の統計量とも言えるね）。expの中の足しあわせは$k$次元ベクトル$\bf T_i=[T_{i,1},T_{i,2},\cdots,T_{i,k}]$と$\boldsymbol{\lambda}_i(\bf u)=[\lambda_{i,1}(\bf u),\lambda_{i,2}(\bf u),\cdots,\lambda_{i,k}(\bf u)]$の内積になっている。$k$はハイパラ。指数分布族はかなり一般的な分布なのでそんなに厳しい条件ではないよね？
