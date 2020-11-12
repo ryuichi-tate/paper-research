@@ -41,5 +41,5 @@ GANを用いて最も独立となるような成分を抜き出す研究もあ�
 ## 深層隠れ変数モデルって？
 観測変数$\bf x\in\mathcal{R}^d$と隠れ変数$\bf z\in\mathbb{R}^n$がある。確率モデルは
 
-<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%3Dp_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%7C%5Cbf+z%29p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+z%29%0A%5Cend%7Balign%2A%7D%0A">
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%3Dp_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%7C%5Cbf+z%29p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+z%29%5Ctag%7B1%7D%0A%5Cend%7Balign%7D%0A" alt="\begin{align}p_{\boldsymbol\theta}(\bf x,\bf z)=p_{\boldsymbol\theta}(\bf x|\bf z)p_{\boldsymbol\theta}(\bf z)\tag{1}\end{align}">
 
