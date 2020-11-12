@@ -110,6 +110,10 @@ factorialって掛け算で分解できる→独立ってことかな？
 <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+p_%7Bf%7D%28%5Cbf+x%7C%5Cbf+z%29%3Dp_%7B%5Cboldsymbol%5Cvarepsilon%7D%28%5Cbf+x-%5Cbf+f%28%5Cbf+z%29%29%0A" alt="p_{f}(\bf x|\bf z)=p_{\boldsymbol\varepsilon}(\bf x-\bf f(\bf z))
 ">
 
+グラフィカルモデルはこんな感じ。
+
+![iVAE_fig1](../paper-research/images/iVAE_fig1.png)
+
 これは$\bf x$の実現値は$\bf x=\bf f(\bf z)+\boldsymbol{\varepsilon}$と分解可能であることを意味する。（$\boldsymbol{\varepsilon}$は確率分布$p_{\boldsymbol\varepsilon}(\boldsymbol\varepsilon)$に従う、他の変数とは独立な変数である）<br>
 $\bf f$は単写で、ある複雑な非線形関数を表す。解析では$\bf f$をモデルパラメタのように扱うが、実際はニューラルで表現する。
 
@@ -124,3 +128,23 @@ $\bf f$は単写で、ある複雑な非線形関数を表す。解析では$\bf
 
 $Q_i$や$T_{i,j}$は適当な関数（$\bf z$の統計量とも言えるね）。expの中の足しあわせは$k$次元ベクトル$\bf T_i=[T_{i,1},T_{i,2},\cdots,T_{i,k}]$と${\boldsymbol\lambda}_i(\bf u)=[\lambda_{i,1}(\bf u),\lambda_{i,2}(\bf u),\cdots,\lambda_{i,k}(\bf u)]$ の内積になっている。
 $k$はハイパラ。指数分布族はかなり一般的な分布なのでそんなに厳しい条件ではないよね？
+
+### VAEで推定
+このモデルの実用的な推定方法について。$\mathcal{D}=\{(\bf x^{(1)},\bf u^{(1)}),(\bf x^{(2)},\bf u^{(2)}),\cdot,(\bf x^{(N)},\bf u^{(N)})\}$というデータセットを持っています。このデータの生成モデルは上であげた指数分布族のやつ。VAEを使って真の生成モデルのパラメータ$\boldsymbol{\theta}^{\ast}=(\bf f^{\ast},\bf T^{\ast},\boldsymbol{\lambda}^{\ast})$を推定する。
+
+VAEは深層隠れ変数モデル$p(\bf x,\bf z|\bf u)$と隠れ変数の事後分布$p_{\boldsymbol{\theta}}(\bf z|\bf x,\bf u)$の変分近似分布$q_{\boldsymbol{\phi}}(\bf z|\bf x,\bf u)$を学習する。$p_{\boldsymbol{\theta}}(\bf x|\bf u)=\int p_{\boldsymbol{\theta}}(\bf x,\bf z|\bf u)d\bf u$とすれば条件付き周辺分布を得られる。$q_{\mathcal{D}}(\bf x,\bf u)$はデータの経験分布である。<br>
+VAEでは対数尤度の期待値の下限$\mathcal{{L}(\boldsymbol{\theta},\boldsymbol{\phi})}$を最大化することでパラメタ$(\boldsymbol{\theta},\boldsymbol{\phi})$を学習する。
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cmathbb%7BE%7D_%7Bq_%7B%5Cmathcal%7BD%7D%7D%7D%5B%5Clog+p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%7C%5Cbf+u%29%5D%5Cgeq%5Cmathcal%7BL%7D%28%5Cboldsymbol%7B%5Ctheta%7D%2C%5Cboldsymbol%7B%5Cphi%7D%29%3D%5Cmathbb%7BE%7D_%7Bq_%7B%5Cmathcal%7BD%7D%7D%7D%5Cleft%5B%5Cmathbb%7BE%7D_%7Bq_%7B%5Cboldsymbol%5Cphi%7D%28%5Cbf+z%7C%5Cbf+x%2C%5Cbf+u%29%7D%5B%5Clog+p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%7C%5Cbf+u%29-%5Clog+q_%7B%5Cboldsymbol%5Cphi%7D%28%5Cbf+z%7C%5Cbf+x%2C%5Cbf+u%29%5D%5Cright%5D" alt="\mathbb{E}_{q_{\mathcal{D}}}[\log p_{\boldsymbol\theta}(\bf x|\bf u)]\geq\mathcal{L}(\boldsymbol{\theta},\boldsymbol{\phi})=\mathbb{E}_{q_{\mathcal{D}}}\left[\mathbb{E}_{q_{\boldsymbol\phi}(\bf z|\bf x,\bf u)}[\log p_{\boldsymbol\theta}(\bf x,\bf z|\bf u)-\log q_{\boldsymbol\phi}(\bf z|\bf x,\bf u)]\right]">
+
+$q_{\boldsymbol\phi}(\bf z|\bf x,\bf u)$からのサンプルにリパラトリックを使う。<br>
+<cite>This trick provides a low-variance stochastic estimator for gradient bound with respect to $\phi$.</cite><br>
+訓練方法は普通のVAEと同じ。学習によって得られた事後分布$p_{\boldsymbol\theta}(\bf z|\bf x,\bf u)$からのサンプリングによって隠れ変数を推定できる。
+
+密度関数が正規化されていないといけないから事前分布$p_{\boldsymbol{\theta}}(\bf z|\bf x)$はガウス分布を想定する？（良く分からん）
+
+### 識別可能性と一貫性？
+
+深層隠れ変数モデルの識別可能性を担保するのはむずい。<br>
+ここではモデルの識別可能性についてざっくりと説明する。（詳しくは4章へ）<br>
+簡単な例として、ノイズはなく（$Var[\varepsilon]=0$）、$k=1$とする。（つまり$T_i=T_{i,1}$）真の隠れ変数$\bf z^{\ast}$
