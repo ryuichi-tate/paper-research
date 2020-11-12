@@ -122,4 +122,4 @@ $\bf f$は単写で、ある複雑な非線形関数を表す。解析では$\bf
 
 <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+p_%7B%5Cboldsymbol%7B%5Ctheta%7D%7D%28%5Cbf+z%7C%5Cbf+u%29%3Dp_%7B%5Cbf+T%2C%5Cbf%5Clambda%7D%28%5Cbf+z%7C%5Cbf+u%29%3D%5Cprod_i%5Cfrac%7BQ_i%28z_i%29%7D%7BZ_i%28%5Cbf+u%29%7D%5Cexp%5Cleft%5B%5Csum_%7Bj%3D1%7D%5EkT_%7Bi%2Cj%7D%28z_i%29%5Clambda_%7Bi%2Cj%7D%28%5Cbf+u%29%5Cright%5D" alt="p_{\boldsymbol{\theta}}(\bf z|\bf u)=p_{\bf T,\bf\lambda}(\bf z|\bf u)=\prod_i\frac{Q_i(z_i)}{Z_i(\bf u)}\exp\left[\sum_{j=1}^kT_{i,j}(z_i)\lambda_{i,j}(\bf u)\right]">
 
-$Q_i$や$T_{i,j}$は適当な関数（$\bf z$の統計量とも言えるね）。expの中の足しあわせは$k$次元ベクトル$\bf T_i=[T_{i,1},T_{i,2},\cdots,T_{i,k}]$と${\boldsymbol{\lambda}}_i(\bf u)=[\lambda_{i,1}(\bf u),\lambda_{i,2}(\bf u),\cdots,\lambda_{i,k}(\bf u)]$ の内積になっている。$k$はハイパラ。指数分布族はかなり一般的な分布なのでそんなに厳しい条件ではないよね？
+$Q_i$や$T_{i,j}$は適当な関数（$\bf z$の統計量とも言えるね）。expの中の足しあわせは$k$次元ベクトル$\bf T_i=[T_{i,1},T_{i,2},\cdots,T_{i,k}]$と${\boldsymbol\lambda}_i(\bf u)=[\lambda_{i,1}(\bf u),\lambda_{i,2}(\bf u),\cdots,\lambda_{i,k}(\bf u)]$ の内積になっている。$k$はハイパラ。指数分布族はかなり一般的な分布なのでそんなに厳しい条件ではないよね？
