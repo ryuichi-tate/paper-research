@@ -39,7 +39,10 @@ GANを用いて最も独立となるような成分を抜き出す研究もあ�
 ## 深層隠れ変数モデルの識別不可能性
 
 ## 深層隠れ変数モデルって？
-観測変数$\bf x\in\mathcal{R}^d$と隠れ変数$\bf z\in\mathbb{R}^n$がある。確率モデルは
+観測変数$\bf x\in\mathcal{R}^d$と隠れ変数$\bf z\in\mathbb{R}^n$がある。確率モデルは<bf>
 
 <img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%3Dp_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%7C%5Cbf+z%29p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+z%29%5Ctag%7B1%7D%0A%5Cend%7Balign%7D%0A" alt="\begin{align}p_{\boldsymbol\theta}(\bf x,\bf z)=p_{\boldsymbol\theta}(\bf x|\bf z)p_{\boldsymbol\theta}(\bf z)\tag{1}\end{align}">
 
+という構造。$\boldsymbol\theta\in\Theta$はモデルのパラメタで、$p_{\boldsymbol\theta}(\bf z)$は隠れ変数の事前分布。隠れ変数$\bf z$の値によって決まる観測変数$\bf x$の確率分布$p_{\boldsymbol\theta}(\bf x|\bf z)$は、decoderというニューラルネットでparametarizeされる。<bf>
+データの経験分布$p_{\boldsymbol\theta}(\bf x)$はこうなる。<br>
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%7D%0Ap_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%29%3D%5Cint+p_%7B%5Cboldsymbol%5Ctheta%7D%28%5Cbf+x%2C%5Cbf+z%29%5Ctag%7B2%7D%0A%5Cend%7Balign%7D" alt="\begin{align}p_{\boldsymbol\theta}(\bf x)=\int p_{\boldsymbol\theta}(\bf x,\bf z)\tag{2}\end{align}">
