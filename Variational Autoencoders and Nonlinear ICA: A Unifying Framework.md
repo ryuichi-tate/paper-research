@@ -112,10 +112,10 @@ factorialって掛け算で分解できる→独立ってことかな？
 
 グラフィカルモデルはこんな感じ。
 
-![iVAE_fig1](../paper-research/images/iVAE_fig1.png)
+![iVAE_fig1](./images/iVAE_fig1.png)
 
 これは$\bf x$の実現値は$\bf x=\bf f(\bf z)+\boldsymbol{\varepsilon}$と分解可能であることを意味する。（$\boldsymbol{\varepsilon}$は確率分布$p_{\boldsymbol\varepsilon}(\boldsymbol\varepsilon)$に従う、他の変数とは独立な変数である）<br>
-$\bf f$は単写で、ある複雑な非線形関数を表す。解析では$\bf f$をモデルパラメタのように扱うが、実際はニューラルで表現する。
+$\bf f$は単写(injective=逆写像が存在する)で、ある複雑な非線形関数を表す。解析では$\bf f$をモデルパラメタのように扱うが、実際はニューラルで表現する。
 
 ここでは観測変数$\bf x$は連続でノイズの乗ったものとするが、ノイズのないモデリングや離散的な観測変数を想定することも可能。詳しくは補題Cへ。<br>
 したがって$p_{\boldsymbol\theta}(\bf x|\bf z)$を離散確率分布やflow-basedモデル（$\bf z$から$\bf x$への変換が確定的なモデルの一つ？）に置き換えることもできる。
@@ -160,4 +160,43 @@ $A$において位置に関する項（平行移動？）を除くとただの�
 
 ### 非線形ICAとしての解釈
 
-非線形ICAでは観測変数$\bf x\in\mathbb{R}^d$は逆関数の存在する未知の関数$\bf f$によって隠れ変数$\bf z\in\mathbb{R}^d$を変換して得られたものとする。
+非線形ICAでは、観測変数$\bf x\in\mathbb{R}^d$は、逆関数の存在する未知の関数$\bf f$によって隠れ変数$\bf z\in\mathbb{R}^d$を変換して得られたものとする。
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbf+x%3D%5Cbf+f%28%5Cbf+z%29" alt="\bf x=\bf f(\bf z)">
+
+ここで$\bf z$は次元ごとに独立（分解可能）とする。→ $p(\bf z)=\prod_{i=1}^dp_i(z_i)$
+
+深層隠れ変数モデルとの違いは、隠れ変数$\bf z$から観測変数$\bf x$への変換が確定的である点と、$\bf x$と$\bf z$の次元が一致している点である。
+
+ICAの目標は$\bf f^{-1}$の合成である。そうすれば独立成分$\bf z=\bf f^{-1}(\bf x)$をデータから抽出できる。つまりICAにおいては常にモデルは識別可能であることを前提としている。
+
+識別可能にしたいなら$\bf f$に制約をいれる（線形にするとか）か、$\bf z$の分布に制約をいれる必要がある。後者について、軽い変換（簡単な非線形変換とか）なら識別可能にできる非線形ICAモデルが三つある（Hyvärinen and Morioka）。
+
+ Hyvärinen et al. (2019)の先行事例と似てるけど...今回は
+- その事後分布が非退化である生成モデルを定義しており、それがVAEとの関連性に繋がる
+- 最尤推定（もしくはその下限を抑える推定）になっている。（先行事例の損失は割とヒューリスティック？）<br>尤度の下限を計算するのは何かと便利。（モデルエビデンスの計算とかできる）
+- forwardモデルとbackwardモデルを学習するので、隠れ変数の推定だけでなく新しいデータの生成も可能になる！
+- 
+さらに最尤推定と隠れ変数の独立性の最大化との間には密接な関係が...!（補題F参照）
+
+
+## 識別可能性の理論
+もうまぢムリ
+
+## 実験
+### 人工データでシミュレーション
+非線形ICAの時に使ったデータセット使います。<br>
+source $\bf z$が非定常なガウス時系列となる人工データを作成。→ sourceを$L$サンプルづつ$M$セットに分割。<br>
+変数$\bf u$のセグメント（次元、かなぁ？）は離散一様分布$U(0,M)$に従う。それぞれの$\bf u$のセグメントから、指数分布族の式
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+p_%7B%5Cboldsymbol%7B%5Ctheta%7D%7D%28%5Cbf+z%7C%5Cbf+u%29%3Dp_%7B%5Cbf+T%2C%5Cbf%5Clambda%7D%28%5Cbf+z%7C%5Cbf+u%29%3D%5Cprod_i%5Cfrac%7BQ_i%28z_i%29%7D%7BZ_i%28%5Cbf+u%29%7D%5Cexp%5Cleft%5B%5Csum_%7Bj%3D1%7D%5EkT_%7Bi%2Cj%7D%28z_i%29%5Clambda_%7Bi%2Cj%7D%28%5Cbf+u%29%5Cright%5D" alt="p_{\boldsymbol{\theta}}(\bf z|\bf u)=p_{\bf T,\bf\lambda}(\bf z|\bf u)=\prod_i\frac{Q_i(z_i)}{Z_i(\bf u)}\exp\left[\sum_{j=1}^kT_{i,j}(z_i)\lambda_{i,j}(\bf u)\right]">
+にしたがって事前分布$p_{\boldsymbol{\theta}}(\bf z|\bf u)$が選ばれる。$k=2$と設定するなら（平均と分散がパラメータの）正規分布から選ばれる。$k=1$なら平均固定の正規分布orラプラス分布。<br>
+source $\bf z$にMLPをかまし、わずかなガウスノイズを乗せたものを観測とする。
+
+#### モデルの仕様
+隠れ変数の推定は変分推論での事後分布（＝学習された事後分布？）$q_{\boldsymbol{\phi}}(\bf z|\bf x,\bf u)$からのサンプルによって行う。今回は共分散が$0$の多次元正規分布を仮定する。$q_{\boldsymbol{\phi}}(\bf z|\bf x,\bf u)=\mathcal{N}(\bf z|\bf g(\bf x,\bf u;\phi_{\bf g}),diag \boldsymbol{\sigma}^2(\bf x,\bf u;\phi_{\sigma}))$
+
+
+## G ICAの先行研究
+### Time Contrastive Learning によるICA
+source $\bf z$が独立なら、それって非定常な時系列として捉えられるよね？って感じ。
+んなわけあるか〜い
