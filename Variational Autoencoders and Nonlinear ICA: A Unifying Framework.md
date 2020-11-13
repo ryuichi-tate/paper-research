@@ -147,4 +147,17 @@ $q_{\boldsymbol\phi}(\bf z|\bf x,\bf u)$からのサンプルにリパラトリ�
 
 深層隠れ変数モデルの識別可能性を担保するのはむずい。<br>
 ここではモデルの識別可能性についてざっくりと説明する。（詳しくは4章へ）<br>
-簡単な例として、ノイズはなく（$Var[\varepsilon]=0$）、$k=1$とする。（つまり$T_i=T_{i,1}$）真の隠れ変数$\bf z^{\ast}$
+簡単な例として、ノイズはなく（$Var[\varepsilon]=0$）、$k=1$とする。（つまり$T_i=T_{i,1}$）真の隠れ変数$\bf z^{\ast}$とモデルの隠れ変数の関係を記述すると、
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%28T_1%5E%7B%5Cast%7D%28z_1%5E%7B%5Cast%7D%29%2CT_2%5E%7B%5Cast%7D%28z_2%5E%7B%5Cast%7D%29%2C%5Ccdots%2CT_n%5E%7B%5Cast%7D%28z_n%5E%7B%5Cast%7D%29%29%3DA%28T_1%28z_1%29%2CT_2%28z_2%29%2C%5Ccdots%2CT_n%28z_n%29%29" alt="(T_1^{\ast}(z_1^{\ast}),T_2^{\ast}(z_2^{\ast}),\cdots,T_n^{\ast}(z_n^{\ast}))=A(T_1(z_1),T_2(z_2),\cdots,T_n(z_n))">
+
+となる。$A$は逆行列が存在する行列。つまり真の隠れ変数$\bf z^{\ast}$を、変換$T$と$T^{\ast}$、そして$A$をかました後までは回復できる。（は？意味わからん）<br>
+$A$において位置に関する項（平行移動？）を除くとただの置換行列とみなせる。つまり
+
+<img src="https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+T_i%5E%7B%5Cast%7D%28z_i%5E%7B%5Cast%7D%29%3DT_%7Bi%27%7D%28z_%7Bi%27%7D%29" alt="T_i^{\ast}(z_i^{\ast})=T_{i'}(z_{i'})">
+
+まじ何言ってんだこいつ
+
+### 非線形ICAとしての解釈
+
+非線形ICAでは観測変数$\bf x\in\mathbb{R}^d$は逆関数の存在する未知の関数$\bf f$によって隠れ変数$\bf z\in\mathbb{R}^d$を変換して得られたものとする。
