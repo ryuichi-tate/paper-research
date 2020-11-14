@@ -1,5 +1,6 @@
 # Variational Autoencoders and Nonlinear ICA: A Unifying Framework
 Ilyes Khemakhem,  Diederik P. Kingma,  Ricardo Pio Monti,  Aapo Hyvärinen
+
 https://arxiv.org/abs/1907.04809
 
 ## 概要
