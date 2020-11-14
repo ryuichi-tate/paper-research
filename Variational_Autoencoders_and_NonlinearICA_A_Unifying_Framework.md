@@ -195,6 +195,9 @@ source $\bf z$にMLPをかまし、わずかなガウスノイズを乗せたも
 #### モデルの仕様
 隠れ変数の推定は変分推論での事後分布（＝学習された事後分布？）$q_{\boldsymbol{\phi}}(\bf z|\bf x,\bf u)$からのサンプルによって行う。今回は共分散が$0$の多次元正規分布を仮定する。$q_{\boldsymbol{\phi}}(\bf z|\bf x,\bf u)=\mathcal{N}(\bf z|\bf g(\bf x,\bf u;\phi_{\bf g}),diag \boldsymbol{\sigma}^2(\bf x,\bf u;\phi_{\sigma}))$
 
+#### 評価
+$\bf z$の評価方法として、<strong>学習された事後分布からのサンプルと真のsourceとの相互相関の期待値を用いる。</strong>相互相関が高いと隠れ変数の点推定が良くできていることを意味するらしく、ICAでは良く使われるとか。知らんけど。式を寄越せ。
+
 
 ## G ICAの先行研究
 ### Time Contrastive Learning によるICA
