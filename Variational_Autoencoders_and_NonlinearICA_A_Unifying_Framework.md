@@ -1,6 +1,8 @@
 # Variational Autoencoders and Nonlinear ICA: A Unifying Framework
 Ilyes Khemakhem,  Diederik P. Kingma,  Ricardo Pio Monti,  Aapo Hyvärinen
 
+https://arxiv.org/abs/1907.04809
+
 ## 概要
 VAEとは：「深層 隠れ変数モデル」 の学習を深層学習で効果的に行うフレームワーク<br>　→　結果としてモデル内の観測変数の分布$p(\bf x)$はよく真のデータ分布とfitする。
 
